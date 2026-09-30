@@ -45,9 +45,11 @@ En el editor con XR Device Simulator:
 
    ![Vista general](Docs/overview.png)
 
-2. Configuración XR y componentes en el Inspector
+2. Configuración XR y componentes en el Inspector: jerarquía de la escena y el matraz con `Rigidbody`, `XR Grab Interactable` y `Flask Heater`
 
-   ![Inspector](Docs/inspector.png)
+   ![Jerarquía](Docs/hierarchy.png)
+   ![Inspector: Rigidbody](Docs/inspector.png)
+   ![Inspector: XR Grab Interactable y Flask Heater](Docs/inspector_grab.png)
 
 3. Interacción funcionando: mechero encendido con el rayo y matraz calentado sobre la llama
 
