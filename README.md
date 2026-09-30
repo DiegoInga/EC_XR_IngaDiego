@@ -21,7 +21,7 @@ Escena principal: `Assets/Scenes/EC_XR_IngaDiego.unity`
 | Escenario | Piso, luz direccional, luz de la sala, cuatro paredes que delimitan el espacio, mesón de laboratorio, soporte del mechero, estante con frascos, armario de seguridad y cartel "XR SCIENCE LAB" (más de cinco objetos 3D) |
 | Objetos manipulables | `Beaker`, `Test Tube` y `Flask` con `Rigidbody` y `XR Grab Interactable` |
 | Interacción a distancia (Ray) | `Bunsen Burner`: enciende y apaga la llama y su luz. `Reactor Liquid`: cambia el color del líquido en cada selección |
-| Reto libre | UI espacial *Sample Generator* que genera muestras agarrables con contador, lanzamiento de objetos (`Throw On Detach`), teletransporte (`Teleportation Area`) y límite del área de juego dentro de las paredes (`PlayAreaLimiter`) |
+| Reto libre | Gradilla de tubos con tres `XR Socket Interactor` donde los tubos y muestras encajan al soltarlos; mezcla química: al dejar caer una muestra en el reactor, el líquido toma su color; UI espacial *Sample Generator* que genera muestras agarrables con contador, lanzamiento de objetos (`Throw On Detach`), teletransporte (`Teleportation Area`) y límite del área de juego dentro de las paredes (`PlayAreaLimiter`) |
 
 ## Controles
 

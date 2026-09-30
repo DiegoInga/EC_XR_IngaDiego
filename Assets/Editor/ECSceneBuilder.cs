@@ -36,6 +36,7 @@ public static class ECSceneBuilder
         ECLabProps.BuildGlassware(interactables);
         ECLabProps.BuildBurner(interactables);
         ECLabProps.BuildReactor(interactables);
+        ECLabProps.BuildTubeRack(interactables);
         ECSceneUI.BuildSpawnerPanel(interactables);
         ECSceneUI.BuildWallSign(environment);
         BuildRig();

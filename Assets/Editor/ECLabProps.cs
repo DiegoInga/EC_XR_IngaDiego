@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 public static class ECLabProps
 {
@@ -11,6 +12,11 @@ public static class ECLabProps
     private const float BurnerLightIntensity = 2f;
     private const float FlameGlow = 4f;
     private const float ShelfWallOffset = 4.75f;
+    private const float RackOffsetX = 0.75f;
+    private const float RackBaseHeight = 0.04f;
+    private const float SocketHeight = 0.09f;
+    private const float SocketRadius = 0.08f;
+    private static readonly float[] RackSlots = { -0.15f, 0f, 0.15f };
 
     private static readonly Color FlameColor = new Color(1f, 0.55f, 0.1f);
     private static readonly Vector3 BurnerStandPosition = new Vector3(-2.2f, 0.45f, 2.5f);
@@ -92,6 +98,31 @@ public static class ECLabProps
         GameObject liquidObject = ECScenePrimitives.Create(PrimitiveType.Cylinder, "Reactor Liquid (Ray)", new Vector3(0f, 0.41f, 0f), new Vector3(0.44f, 0.35f, 0.44f), reactor.transform, liquid);
         liquidObject.AddComponent<XRSimpleInteractable>();
         liquidObject.AddComponent<RayColorChanger>();
+        liquidObject.AddComponent<ReactorMixer>();
+    }
+
+    public static void BuildTubeRack(Transform parent)
+    {
+        Material rackMaterial = ECScenePrimitives.GetOrCreateMaterial("TubeRack", new Color(0.55f, 0.35f, 0.2f));
+        Vector3 rackCenter = new Vector3(RackOffsetX, BenchTopY, BenchPosition.z);
+
+        GameObject rack = new GameObject("Test Tube Rack");
+        rack.transform.SetParent(parent, false);
+        rack.transform.localPosition = rackCenter;
+        ECScenePrimitives.Create(PrimitiveType.Cube, "Rack Base", new Vector3(0f, RackBaseHeight / 2f, 0f), new Vector3(0.5f, RackBaseHeight, 0.14f), rack.transform, rackMaterial);
+
+        Material slotMaterial = ECScenePrimitives.GetOrCreateMaterial("TubeSlotMarker", new Color(0.1f, 0.1f, 0.12f));
+        foreach (float slotX in RackSlots)
+        {
+            ECScenePrimitives.CreateVisual(PrimitiveType.Cylinder, "Slot Marker", new Vector3(slotX, RackBaseHeight + 0.005f, 0f), new Vector3(0.08f, 0.01f, 0.08f), rack.transform, slotMaterial);
+            GameObject slot = new GameObject("Tube Slot (Socket)");
+            slot.transform.SetParent(rack.transform, false);
+            slot.transform.localPosition = new Vector3(slotX, RackBaseHeight + SocketHeight, 0f);
+            SphereCollider zone = slot.AddComponent<SphereCollider>();
+            zone.isTrigger = true;
+            zone.radius = SocketRadius;
+            slot.AddComponent<XRSocketInteractor>();
+        }
     }
 
     private static void BuildShelf(Transform parent, Material boardMaterial)

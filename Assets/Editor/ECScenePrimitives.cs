@@ -58,7 +58,7 @@ public static class ECScenePrimitives
         Material material = GetOrCreateMaterial(name, color);
         material.SetFloat("_Surface", 1f);
         material.SetFloat("_Blend", 0f);
-        material.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+        material.SetFloat("_SrcBlend", (float)BlendMode.One);
         material.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
         material.SetFloat("_ZWrite", 0f);
         material.SetOverrideTag("RenderType", "Transparent");

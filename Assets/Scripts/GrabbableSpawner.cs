@@ -38,7 +38,9 @@ public class GrabbableSpawner : MonoBehaviour
         sample.name = SpawnedNamePrefix + spawnedCount;
         sample.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
         sample.transform.localScale = sampleScale;
-        sample.GetComponent<Renderer>().material.color = palette[spawnedCount % palette.Length];
+        Color sampleColor = palette[spawnedCount % palette.Length];
+        sample.GetComponent<Renderer>().material.color = sampleColor;
+        sample.AddComponent<ChemicalSample>().Configure(sampleColor);
 
         Rigidbody body = sample.AddComponent<Rigidbody>();
         body.mass = SpawnedObjectMass;
