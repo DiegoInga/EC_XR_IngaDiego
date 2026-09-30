@@ -48,6 +48,7 @@ public class GrabbableSpawner : MonoBehaviour
 
         spawnedCount++;
         RefreshCounter();
+        LabEvents.Report(LabTask.GenerateSample);
     }
 
     private void RefreshCounter()

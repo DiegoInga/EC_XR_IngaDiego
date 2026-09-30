@@ -49,6 +49,10 @@ public class RayLightSwitch : MonoBehaviour
     {
         targetLight.enabled = !targetLight.enabled;
         RefreshState();
+        if (targetLight.enabled)
+        {
+            LabEvents.Report(LabTask.LightBurner);
+        }
     }
 
     private void RefreshState()

@@ -17,6 +17,14 @@ public static class ECSceneUI
     private static readonly Vector3 SpawnPointPosition = new Vector3(0f, 1.3f, 1.5f);
     private static readonly Color PanelColor = new Color(0.1f, 0.1f, 0.15f, 0.85f);
 
+    private const string BoardTitle = "Lab Missions";
+    private const int BoardTaskCount = 5;
+    private const float BoardLineHeight = 48f;
+    private const float BoardTextIndent = 60f;
+    private static readonly Vector2 BoardSize = new Vector2(560f, 400f);
+    private static readonly Vector3 BoardPosition = new Vector3(4.85f, 1.7f, 0.3f);
+    private static readonly Vector3 BoardRotation = new Vector3(0f, 90f, 0f);
+
     private const string SignTitle = "XR SCIENCE LAB";
     private const string SignAuthor = "Inga Diego - EC XR";
     private const int SignFontSize = 56;
@@ -62,6 +70,30 @@ public static class ECSceneUI
         Text title = CreateText(sign.transform, "Title", SignTitle, SignFontSize, new Vector2(0f, 20f));
         title.GetComponent<RectTransform>().sizeDelta = SignSize;
         CreateText(sign.transform, "Author", SignAuthor, BodyFontSize, new Vector2(0f, -40f));
+    }
+
+    public static void BuildMissionBoard(Transform parent)
+    {
+        GameObject board = new GameObject("Mission Board (UI)", typeof(RectTransform));
+        board.transform.SetParent(parent, false);
+        board.transform.localPosition = BoardPosition;
+        board.transform.localRotation = Quaternion.Euler(BoardRotation);
+        board.transform.localScale = Vector3.one * CanvasScale;
+        board.AddComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+        board.GetComponent<RectTransform>().sizeDelta = BoardSize;
+        board.AddComponent<Image>().color = PanelColor;
+
+        float top = BoardSize.y / 2f - BoardLineHeight;
+        CreateText(board.transform, "Title", BoardTitle, TitleFontSize, new Vector2(0f, top));
+        Text[] lines = new Text[BoardTaskCount];
+        for (int i = 0; i < BoardTaskCount; i++)
+        {
+            lines[i] = CreateText(board.transform, "Task " + i, string.Empty, BodyFontSize, new Vector2(BoardTextIndent, top - BoardLineHeight * (i + 1)));
+            lines[i].alignment = TextAnchor.MiddleLeft;
+            lines[i].GetComponent<RectTransform>().sizeDelta = new Vector2(BoardSize.x, BoardLineHeight);
+        }
+        Text progress = CreateText(board.transform, "Progress", string.Empty, BodyFontSize, new Vector2(0f, top - BoardLineHeight * (BoardTaskCount + 1)));
+        board.AddComponent<LabMissionBoard>().Configure(lines, progress);
     }
 
     public static void EnsureEventSystem()

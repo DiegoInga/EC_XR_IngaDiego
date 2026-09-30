@@ -42,7 +42,7 @@ public static class ECLabProps
         BuildShelf(parent, benchMaterial);
     }
 
-    public static void BuildGlassware(Transform parent)
+    public static GameObject BuildGlassware(Transform parent)
     {
         float y = BenchTopY;
         float z = BenchPosition.z;
@@ -51,10 +51,10 @@ public static class ECLabProps
         Material flask = ECScenePrimitives.GetOrCreateTransparentMaterial("GlassFlask", new Color(1f, 0.4f, 0.7f, 0.6f));
         ECScenePrimitives.CreateGrabbable(PrimitiveType.Cylinder, "Beaker (Grab)", new Vector3(-0.7f, y + 0.09f, z), new Vector3(0.12f, 0.08f, 0.12f), parent, beaker);
         ECScenePrimitives.CreateGrabbable(PrimitiveType.Cylinder, "Test Tube (Grab)", new Vector3(-0.3f, y + 0.1f, z), new Vector3(0.04f, 0.09f, 0.04f), parent, tube);
-        ECScenePrimitives.CreateGrabbable(PrimitiveType.Sphere, "Flask (Grab)", new Vector3(0.1f, y + 0.09f, z), Vector3.one * 0.16f, parent, flask);
+        return ECScenePrimitives.CreateGrabbable(PrimitiveType.Sphere, "Flask (Grab)", new Vector3(0.1f, y + 0.09f, z), Vector3.one * 0.16f, parent, flask);
     }
 
-    public static void BuildBurner(Transform parent)
+    public static Light BuildBurner(Transform parent)
     {
         Material metal = ECScenePrimitives.GetOrCreateMaterial("BurnerMetal", new Color(0.6f, 0.62f, 0.65f));
         Material flameMaterial = ECScenePrimitives.GetOrCreateEmissiveMaterial("BurnerFlame", FlameColor, FlameGlow);
@@ -78,9 +78,11 @@ public static class ECLabProps
         flameLight.color = FlameColor;
         flameLight.range = BurnerLightRange;
         flameLight.intensity = BurnerLightIntensity;
+        flameLight.enabled = false;
 
         burner.AddComponent<XRSimpleInteractable>();
         burner.AddComponent<RayLightSwitch>().Configure(flameLight, baseDisk.GetComponent<Renderer>(), flame);
+        return flameLight;
     }
 
     public static void BuildReactor(Transform parent)
@@ -109,6 +111,7 @@ public static class ECLabProps
         GameObject rack = new GameObject("Test Tube Rack");
         rack.transform.SetParent(parent, false);
         rack.transform.localPosition = rackCenter;
+        rack.AddComponent<TubeRackReporter>();
         ECScenePrimitives.Create(PrimitiveType.Cube, "Rack Base", new Vector3(0f, RackBaseHeight / 2f, 0f), new Vector3(0.5f, RackBaseHeight, 0.14f), rack.transform, rackMaterial);
 
         Material slotMaterial = ECScenePrimitives.GetOrCreateMaterial("TubeSlotMarker", new Color(0.1f, 0.1f, 0.12f));

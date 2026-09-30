@@ -33,12 +33,14 @@ public static class ECSceneBuilder
         BuildLighting(environment);
         BuildRoom(environment);
         ECLabProps.BuildFurniture(environment);
-        ECLabProps.BuildGlassware(interactables);
-        ECLabProps.BuildBurner(interactables);
+        GameObject flask = ECLabProps.BuildGlassware(interactables);
+        Light flameLight = ECLabProps.BuildBurner(interactables);
+        flask.AddComponent<FlaskHeater>().Configure(flameLight, flameLight.transform);
         ECLabProps.BuildReactor(interactables);
         ECLabProps.BuildTubeRack(interactables);
         ECSceneUI.BuildSpawnerPanel(interactables);
         ECSceneUI.BuildWallSign(environment);
+        ECSceneUI.BuildMissionBoard(environment);
         BuildRig();
 
         EditorSceneManager.SaveScene(scene, ScenePath);

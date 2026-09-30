@@ -20,6 +20,7 @@ public class ReactorMixer : MonoBehaviour
         }
         liquidRenderer.material.color = sample.SampleColor;
         Destroy(sample.gameObject);
+        LabEvents.Report(LabTask.MixSample);
     }
 
     private static bool IsHeld(ChemicalSample sample)
