@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Estudiante | Inga Diego |
-| Código del estudiante | `PENDIENTE` |
+| Código del estudiante | 2231891832 |
 | Curso | Laboratorio de Realidad Extendida (XR) para Videojuegos |
 | Docente | Victor Alejandro Arroyo Castro |
 
@@ -49,9 +49,13 @@ En el editor con XR Device Simulator:
 
    ![Inspector](Docs/inspector.png)
 
-3. Interacción funcionando
+3. Interacción funcionando: mechero encendido con el rayo y matraz calentado sobre la llama
 
    ![Interacción](Docs/interaction.png)
+
+4. Panel de misiones con las cinco tareas completadas
+
+   ![Misiones](Docs/missions.png)
 
 ## Video demostrativo
 
