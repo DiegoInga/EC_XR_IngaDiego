@@ -1,4 +1,4 @@
-# XR Interaction Challenge — EC_XR_IngaDiego
+# XR Science Lab — EC_XR_IngaDiego
 
 | Campo | Valor |
 |---|---|
@@ -9,7 +9,7 @@
 
 ## Descripción
 
-Sala de entrenamiento XR construida en Unity 6 con URP y XR Interaction Toolkit. El usuario puede recorrer la sala mediante teletransporte, tomar y lanzar objetos, interactuar a distancia con rayos y usar un panel de UI espacial que genera nuevos objetos y los contabiliza.
+Laboratorio de ciencias en realidad virtual construido en Unity 6 con URP y XR Interaction Toolkit. El usuario recorre el laboratorio, manipula material de vidrio (vaso de precipitado, tubo de ensayo y matraz), enciende un mechero Bunsen y cambia el color del líquido de un reactor químico con el rayo, y usa un panel espacial que genera muestras y las contabiliza.
 
 Escena principal: `Assets/Scenes/EC_XR_IngaDiego.unity`
 
@@ -18,25 +18,26 @@ Escena principal: `Assets/Scenes/EC_XR_IngaDiego.unity`
 | Requerimiento | Implementación |
 |---|---|
 | Configuración XR | URP, XR Plug-in Management, OpenXR y XR Interaction Toolkit 3.6.1 (Starter Assets + XR Device Simulator) |
-| Escenario | Piso, luz direccional, luz puntual de la sala, cuatro paredes que delimitan el espacio, mesa, pilar y objetos interactivos (más de cinco objetos 3D) |
-| Objetos manipulables | `Grab Cube`, `Grab Sphere` y `Grab Tool` con `Rigidbody` y `XR Grab Interactable` |
-| Interacción a distancia (Ray) | `Light Switch`: enciende y apaga la luz de la sala. `Color Changer`: cambia de color en cada selección |
-| Reto libre | Teletransporte sobre el piso (`Teleportation Area`), lanzamiento de objetos (`Throw On Detach`) y UI espacial que hace aparecer objetos con contador |
+| Escenario | Piso, luz direccional, luz de la sala, cuatro paredes que delimitan el espacio, mesón de laboratorio, soporte del mechero, estante con frascos, armario de seguridad y cartel "XR SCIENCE LAB" (más de cinco objetos 3D) |
+| Objetos manipulables | `Beaker`, `Test Tube` y `Flask` con `Rigidbody` y `XR Grab Interactable` |
+| Interacción a distancia (Ray) | `Bunsen Burner`: enciende y apaga la llama y su luz. `Reactor Liquid`: cambia el color del líquido en cada selección |
+| Reto libre | UI espacial *Sample Generator* que genera muestras agarrables con contador, lanzamiento de objetos (`Throw On Detach`), teletransporte (`Teleportation Area`) y límite del área de juego dentro de las paredes (`PlayAreaLimiter`) |
 
 ## Controles
 
 Con visor (OpenXR):
 
-- **Grip**: tomar objetos cercanos o seleccionar con el rayo (interruptor de luz y objeto que cambia de color).
+- **Grip**: tomar el material de vidrio o seleccionar con el rayo (mechero y reactor).
 - **Soltar el grip en movimiento**: lanzar el objeto.
-- **Gatillo sobre el panel**: presionar el botón *Spawn object*.
+- **Gatillo sobre el panel**: presionar el botón *Generate sample*.
 - **Joystick hacia adelante**: apuntar y soltar para teletransportarse.
 
 En el editor con XR Device Simulator:
 
-- **WASD + mouse (clic derecho)**: mover y rotar la vista.
-- **Shift izquierdo / Espacio**: controlar el mando izquierdo o el derecho.
-- **G**: grip (tomar o seleccionar). **T**: gatillo (UI).
+- **Clic derecho + mouse**: girar la cabeza. **W A S D**: caminar.
+- **Mantener Left Shift / Espacio**: controlar el mando izquierdo o el derecho (ambos a la vez para los dos).
+- Con un mando activo: **mouse** o **Q / E** lo mueven, **R** alterna entre mover y rotar el mando.
+- **G**: grip (tomar o seleccionar con el rayo). **Clic izquierdo**: gatillo (botón de la UI).
 
 ## Capturas
 

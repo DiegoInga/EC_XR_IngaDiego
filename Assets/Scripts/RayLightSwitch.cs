@@ -7,15 +7,17 @@ public class RayLightSwitch : MonoBehaviour
 {
     [SerializeField] private Light targetLight;
     [SerializeField] private Renderer indicator;
+    [SerializeField] private GameObject[] toggledVisuals;
     [SerializeField] private Color onColor = Color.yellow;
     [SerializeField] private Color offColor = Color.gray;
 
     private XRSimpleInteractable interactable;
 
-    public void Configure(Light light, Renderer indicatorRenderer)
+    public void Configure(Light light, Renderer indicatorRenderer, params GameObject[] visuals)
     {
         targetLight = light;
         indicator = indicatorRenderer;
+        toggledVisuals = visuals;
     }
 
     private void Awake()
@@ -35,7 +37,7 @@ public class RayLightSwitch : MonoBehaviour
 
     private void Start()
     {
-        RefreshIndicator();
+        RefreshState();
     }
 
     private void OnSelected(SelectEnterEventArgs args)
@@ -46,15 +48,22 @@ public class RayLightSwitch : MonoBehaviour
     public void Toggle()
     {
         targetLight.enabled = !targetLight.enabled;
-        RefreshIndicator();
+        RefreshState();
     }
 
-    private void RefreshIndicator()
+    private void RefreshState()
     {
-        if (indicator == null || targetLight == null)
+        if (targetLight == null)
         {
             return;
         }
-        indicator.material.color = targetLight.enabled ? onColor : offColor;
+        foreach (GameObject visual in toggledVisuals ?? new GameObject[0])
+        {
+            visual.SetActive(targetLight.enabled);
+        }
+        if (indicator != null)
+        {
+            indicator.material.color = targetLight.enabled ? onColor : offColor;
+        }
     }
 }

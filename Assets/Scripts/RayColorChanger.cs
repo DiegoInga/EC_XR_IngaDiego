@@ -5,7 +5,14 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 [RequireComponent(typeof(XRSimpleInteractable))]
 public class RayColorChanger : MonoBehaviour
 {
-    [SerializeField] private Color[] palette = { Color.red, Color.green, Color.blue, Color.magenta, Color.cyan };
+    [SerializeField] private Color[] palette =
+    {
+        new Color(0.2f, 0.9f, 0.4f),
+        new Color(0.9f, 0.2f, 0.6f),
+        new Color(0.2f, 0.6f, 1f),
+        new Color(1f, 0.6f, 0.1f),
+        new Color(0.6f, 0.3f, 1f)
+    };
 
     private XRSimpleInteractable interactable;
     private Renderer targetRenderer;
@@ -25,6 +32,11 @@ public class RayColorChanger : MonoBehaviour
     private void OnDisable()
     {
         interactable.selectEntered.RemoveListener(OnSelected);
+    }
+
+    private void Start()
+    {
+        targetRenderer.material.color = palette[currentIndex];
     }
 
     private void OnSelected(SelectEnterEventArgs args)

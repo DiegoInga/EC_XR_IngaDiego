@@ -1,6 +1,7 @@
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public static class ECScenePrimitives
@@ -50,6 +51,38 @@ public static class ECScenePrimitives
         material.color = color;
         EditorUtility.SetDirty(material);
         return material;
+    }
+
+    public static Material GetOrCreateTransparentMaterial(string name, Color color)
+    {
+        Material material = GetOrCreateMaterial(name, color);
+        material.SetFloat("_Surface", 1f);
+        material.SetFloat("_Blend", 0f);
+        material.SetFloat("_SrcBlend", (float)BlendMode.SrcAlpha);
+        material.SetFloat("_DstBlend", (float)BlendMode.OneMinusSrcAlpha);
+        material.SetFloat("_ZWrite", 0f);
+        material.SetOverrideTag("RenderType", "Transparent");
+        material.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+        material.renderQueue = (int)RenderQueue.Transparent;
+        EditorUtility.SetDirty(material);
+        return material;
+    }
+
+    public static Material GetOrCreateEmissiveMaterial(string name, Color color, float intensity)
+    {
+        Material material = GetOrCreateMaterial(name, color);
+        material.EnableKeyword("_EMISSION");
+        material.SetColor("_EmissionColor", color * intensity);
+        material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
+        EditorUtility.SetDirty(material);
+        return material;
+    }
+
+    public static GameObject CreateVisual(PrimitiveType type, string name, Vector3 position, Vector3 scale, Transform parent, Material material)
+    {
+        GameObject visual = Create(type, name, position, scale, parent, material);
+        Object.DestroyImmediate(visual.GetComponent<Collider>());
+        return visual;
     }
 
     public static GameObject FindPrefab(string exactName)

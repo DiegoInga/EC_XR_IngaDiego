@@ -13,9 +13,16 @@ public static class ECSceneUI
 
     private static readonly Vector2 PanelSize = new Vector2(400f, 220f);
     private static readonly Vector2 ButtonSize = new Vector2(260f, 60f);
-    private static readonly Vector3 PanelPosition = new Vector3(0f, 1.6f, 3.5f);
+    private static readonly Vector3 PanelPosition = new Vector3(0f, 1.45f, 3.5f);
     private static readonly Vector3 SpawnPointPosition = new Vector3(0f, 1.3f, 1.5f);
     private static readonly Color PanelColor = new Color(0.1f, 0.1f, 0.15f, 0.85f);
+
+    private const string SignTitle = "XR SCIENCE LAB";
+    private const string SignAuthor = "Inga Diego - EC XR";
+    private const int SignFontSize = 56;
+    private static readonly Vector2 SignSize = new Vector2(640f, 140f);
+    private static readonly Vector3 SignPosition = new Vector3(0f, 2.62f, 4.85f);
+    private static readonly Color SignColor = new Color(0.05f, 0.35f, 0.4f, 0.95f);
 
     public static void BuildSpawnerPanel(Transform parent)
     {
@@ -30,9 +37,9 @@ public static class ECSceneUI
         canvasObject.GetComponent<RectTransform>().sizeDelta = PanelSize;
         canvasObject.AddComponent<Image>().color = PanelColor;
 
-        CreateText(canvasObject.transform, "Title", "XR Training Room", TitleFontSize, new Vector2(0f, 70f));
-        Text counter = CreateText(canvasObject.transform, "Counter", "Spawned objects: 0", BodyFontSize, new Vector2(0f, 25f));
-        Button button = CreateButton(canvasObject.transform, "Spawn Button", "Spawn object", new Vector2(0f, -50f));
+        CreateText(canvasObject.transform, "Title", "Sample Generator", TitleFontSize, new Vector2(0f, 70f));
+        Text counter = CreateText(canvasObject.transform, "Counter", "Samples generated: 0", BodyFontSize, new Vector2(0f, 25f));
+        Button button = CreateButton(canvasObject.transform, "Generate Button", "Generate sample", new Vector2(0f, -50f));
 
         Transform spawnPoint = new GameObject("Spawn Point").transform;
         spawnPoint.SetParent(parent, false);
@@ -41,6 +48,20 @@ public static class ECSceneUI
         GrabbableSpawner spawner = canvasObject.AddComponent<GrabbableSpawner>();
         spawner.Configure(spawnPoint, counter);
         UnityEventTools.AddPersistentListener(button.onClick, spawner.Spawn);
+    }
+
+    public static void BuildWallSign(Transform parent)
+    {
+        GameObject sign = new GameObject("Lab Sign", typeof(RectTransform));
+        sign.transform.SetParent(parent, false);
+        sign.transform.localPosition = SignPosition;
+        sign.transform.localScale = Vector3.one * CanvasScale;
+        sign.AddComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+        sign.GetComponent<RectTransform>().sizeDelta = SignSize;
+        sign.AddComponent<Image>().color = SignColor;
+        Text title = CreateText(sign.transform, "Title", SignTitle, SignFontSize, new Vector2(0f, 20f));
+        title.GetComponent<RectTransform>().sizeDelta = SignSize;
+        CreateText(sign.transform, "Author", SignAuthor, BodyFontSize, new Vector2(0f, -40f));
     }
 
     public static void EnsureEventSystem()

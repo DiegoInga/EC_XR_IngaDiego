@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Inputs.Simulation;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
 public static class ECSceneBuilder
@@ -14,14 +14,14 @@ public static class ECSceneBuilder
     private const float WallThickness = 0.2f;
     private const float PlayAreaMargin = 0.5f;
     private const float RoomLightRange = 12f;
-    private const float RoomLightIntensity = 3f;
+    private const float RoomLightIntensity = 2.5f;
     private const float SunIntensity = 1f;
+    private const float SimulatorRotateSensitivity = 0.6f;
+    private const float SimulatorMouseTranslateSensitivity = 0.0015f;
+    private const float SimulatorKeyboardTranslateSpeed = 0.5f;
 
     private static readonly Vector3 SunRotation = new Vector3(50f, -30f, 0f);
-    private static readonly Vector3 TablePosition = new Vector3(0f, 0.4f, 1.5f);
-    private static readonly Vector3 TableScale = new Vector3(2f, 0.8f, 0.8f);
-    private static readonly Vector3 SmallObjectScale = Vector3.one * 0.2f;
-    private static readonly Vector3 ToolScale = new Vector3(0.08f, 0.15f, 0.08f);
+    private static readonly Vector3 RigStartPosition = new Vector3(0f, 0f, -1f);
 
     [MenuItem("EC XR/Build Scene")]
     public static void Build()
@@ -32,10 +32,12 @@ public static class ECSceneBuilder
 
         BuildLighting(environment);
         BuildRoom(environment);
-        BuildGrabbables(interactables);
-        Light roomLight = GameObject.Find("Room Light").GetComponent<Light>();
-        BuildRayInteractables(interactables, roomLight);
+        ECLabProps.BuildFurniture(environment);
+        ECLabProps.BuildGlassware(interactables);
+        ECLabProps.BuildBurner(interactables);
+        ECLabProps.BuildReactor(interactables);
         ECSceneUI.BuildSpawnerPanel(interactables);
+        ECSceneUI.BuildWallSign(environment);
         BuildRig();
 
         EditorSceneManager.SaveScene(scene, ScenePath);
@@ -60,13 +62,13 @@ public static class ECSceneBuilder
         roomLight.type = LightType.Point;
         roomLight.range = RoomLightRange;
         roomLight.intensity = RoomLightIntensity;
-        roomLight.color = new Color(1f, 0.9f, 0.7f);
+        roomLight.color = new Color(0.95f, 0.97f, 1f);
     }
 
     private static void BuildRoom(Transform parent)
     {
-        Material floorMaterial = ECScenePrimitives.GetOrCreateMaterial("Floor", new Color(0.35f, 0.35f, 0.4f));
-        Material wallMaterial = ECScenePrimitives.GetOrCreateMaterial("Wall", new Color(0.75f, 0.8f, 0.85f));
+        Material floorMaterial = ECScenePrimitives.GetOrCreateMaterial("LabFloor", new Color(0.78f, 0.8f, 0.82f));
+        Material wallMaterial = ECScenePrimitives.GetOrCreateMaterial("LabWall", new Color(0.82f, 0.93f, 0.9f));
 
         GameObject floor = ECScenePrimitives.Create(PrimitiveType.Plane, "Floor", Vector3.zero, Vector3.one, parent, floorMaterial);
         floor.AddComponent<TeleportationArea>();
@@ -78,50 +80,34 @@ public static class ECSceneBuilder
         ECScenePrimitives.Create(PrimitiveType.Cube, "Wall South", new Vector3(0f, wallY, -RoomHalfSize), wallX, parent, wallMaterial);
         ECScenePrimitives.Create(PrimitiveType.Cube, "Wall East", new Vector3(RoomHalfSize, wallY, 0f), wallZ, parent, wallMaterial);
         ECScenePrimitives.Create(PrimitiveType.Cube, "Wall West", new Vector3(-RoomHalfSize, wallY, 0f), wallZ, parent, wallMaterial);
-
-        Material tableMaterial = ECScenePrimitives.GetOrCreateMaterial("Table", new Color(0.45f, 0.3f, 0.2f));
-        ECScenePrimitives.Create(PrimitiveType.Cube, "Table", TablePosition, TableScale, parent, tableMaterial);
-        ECScenePrimitives.Create(PrimitiveType.Cylinder, "Pillar", new Vector3(-3f, 1f, -3f), new Vector3(0.5f, 1f, 0.5f), parent, wallMaterial);
-    }
-
-    private static void BuildGrabbables(Transform parent)
-    {
-        float topY = TablePosition.y + TableScale.y / 2f + SmallObjectScale.y;
-        Material red = ECScenePrimitives.GetOrCreateMaterial("GrabRed", Color.red);
-        Material blue = ECScenePrimitives.GetOrCreateMaterial("GrabBlue", Color.blue);
-        Material yellow = ECScenePrimitives.GetOrCreateMaterial("GrabYellow", Color.yellow);
-        ECScenePrimitives.CreateGrabbable(PrimitiveType.Cube, "Grab Cube", new Vector3(-0.6f, topY, TablePosition.z), SmallObjectScale, parent, red);
-        ECScenePrimitives.CreateGrabbable(PrimitiveType.Sphere, "Grab Sphere", new Vector3(0f, topY, TablePosition.z), SmallObjectScale, parent, blue);
-        ECScenePrimitives.CreateGrabbable(PrimitiveType.Cylinder, "Grab Tool", new Vector3(0.6f, topY, TablePosition.z), ToolScale, parent, yellow);
-    }
-
-    private static void BuildRayInteractables(Transform parent, Light roomLight)
-    {
-        Material switchMaterial = ECScenePrimitives.GetOrCreateMaterial("LightSwitch", Color.yellow);
-        GameObject lightSwitch = ECScenePrimitives.Create(PrimitiveType.Cube, "Light Switch (Ray)", new Vector3(-2.5f, 1.3f, 3f), Vector3.one * 0.3f, parent, switchMaterial);
-        lightSwitch.AddComponent<XRSimpleInteractable>();
-        lightSwitch.AddComponent<RayLightSwitch>().Configure(roomLight, lightSwitch.GetComponent<Renderer>());
-
-        Material colorMaterial = ECScenePrimitives.GetOrCreateMaterial("ColorChanger", Color.white);
-        GameObject colorChanger = ECScenePrimitives.Create(PrimitiveType.Capsule, "Color Changer (Ray)", new Vector3(2.5f, 1f, 3f), Vector3.one * 0.5f, parent, colorMaterial);
-        colorChanger.AddComponent<XRSimpleInteractable>();
-        colorChanger.AddComponent<RayColorChanger>();
     }
 
     private static void BuildRig()
     {
-        GameObject setup = ECScenePrimitives.InstantiatePrefab("XR Interaction Setup");
-        if (setup == null)
+        GameObject rig = ECScenePrimitives.InstantiatePrefab("XR Origin (XR Rig)");
+        if (rig != null)
         {
-            setup = ECScenePrimitives.InstantiatePrefab("XR Origin (XR Rig)");
+            rig.transform.position = RigStartPosition;
+            rig.AddComponent<PlayAreaLimiter>().Configure(Vector3.zero, RoomHalfSize - PlayAreaMargin);
         }
-        if (setup != null)
+        GameObject simulator = ECScenePrimitives.InstantiatePrefab("XR Device Simulator");
+        if (simulator != null)
         {
-            setup.transform.position = new Vector3(0f, 0f, -1f);
-            setup.AddComponent<PlayAreaLimiter>().Configure(Vector3.zero, RoomHalfSize - PlayAreaMargin);
+            ConfigureSimulator(simulator.GetComponent<XRDeviceSimulator>());
         }
-        ECScenePrimitives.InstantiatePrefab("XR Device Simulator");
         ECSceneUI.EnsureEventSystem();
+    }
+
+    private static void ConfigureSimulator(XRDeviceSimulator simulator)
+    {
+        simulator.mouseXRotateSensitivity = SimulatorRotateSensitivity;
+        simulator.mouseYRotateSensitivity = SimulatorRotateSensitivity;
+        simulator.mouseXTranslateSensitivity = SimulatorMouseTranslateSensitivity;
+        simulator.mouseYTranslateSensitivity = SimulatorMouseTranslateSensitivity;
+        simulator.keyboardXTranslateSpeed = SimulatorKeyboardTranslateSpeed;
+        simulator.keyboardYTranslateSpeed = SimulatorKeyboardTranslateSpeed;
+        simulator.keyboardZTranslateSpeed = SimulatorKeyboardTranslateSpeed;
+        PrefabUtility.RecordPrefabInstancePropertyModifications(simulator);
     }
 
     private static void AddSceneToBuild()
