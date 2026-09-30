@@ -12,6 +12,7 @@ public static class ECSceneBuilder
     private const float RoomHalfSize = 5f;
     private const float WallHeight = 3f;
     private const float WallThickness = 0.2f;
+    private const float PlayAreaMargin = 0.5f;
     private const float RoomLightRange = 12f;
     private const float RoomLightIntensity = 3f;
     private const float SunIntensity = 1f;
@@ -117,6 +118,7 @@ public static class ECSceneBuilder
         if (setup != null)
         {
             setup.transform.position = new Vector3(0f, 0f, -1f);
+            setup.AddComponent<PlayAreaLimiter>().Configure(Vector3.zero, RoomHalfSize - PlayAreaMargin);
         }
         ECScenePrimitives.InstantiatePrefab("XR Device Simulator");
         ECSceneUI.EnsureEventSystem();
