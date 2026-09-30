@@ -61,7 +61,7 @@ En el editor con XR Device Simulator:
 
 ## Video demostrativo
 
-(PENDIENTE)](https://www.youtube.com/watch?v=UlvqgTRJrag)
+https://www.youtube.com/watch?v=UlvqgTRJrag
 
 ## Cómo abrir el proyecto
 
